@@ -1,5 +1,6 @@
 const mongoose = require('mongoose');
 const Campground = require('../models/campground');
+const Review = require('../models/review');
 const cities = require('./cities');
 const { places, descriptors } = require('./seedHelpers');
 
@@ -17,6 +18,7 @@ const seedDb = async () => {
 
     console.log('Deleting all campgrounds...')
     await Campground.deleteMany({});
+    await Review.deleteMany({});
     console.log('Deleting all campgrounds successfully completed!');
 
     for (let i = 0; i < 50; i++) {
@@ -28,6 +30,7 @@ const seedDb = async () => {
             imageUrl: 'https://source.unsplash.com/collection/483251',
             description: 'Lorem ipsum dolor sit amet, consectetur adipisicing elit. Ipsam, praesentium. Praesentium facere dolore suscipit, rerum, nisi assumenda placeat tempora illum facilis accusantium, odio soluta molestias qui ab sed tenetur quibusdam.',
             price: randomPrice,
+            author: '63488ca5f65d4db69988205c'
         });
         await camp.save();
     }
