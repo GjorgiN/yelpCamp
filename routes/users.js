@@ -7,16 +7,21 @@ const users = require('../controllers/users');
 
 const router = express.Router({ mergeParams: true });
 
-router.get('/register', users.renderRegister);
+router.route('/register')
+    .get(users.renderRegister)
+    .post(catchAsync(users.register));
 
-router.post('/register', catchAsync(users.register));
-
-router.get('/login', users.renderLogin);
-
-// if passport 0.5.x is used keepSessionInfo option not needed 
-router.post('/login',
-    passport.authenticate('local', { failureRedirect: '/login', failureFlash: true, failureMessage: true, keepSessionInfo: true }),
-    users.login
+router.route('/login')
+    .get(users.renderLogin)
+    // if passport 0.5.x is used keepSessionInfo option not needed 
+    .post(
+        passport.authenticate('local', {
+            failureRedirect: '/login',
+            failureFlash: true,
+            failureMessage: true,
+            keepSessionInfo: true
+        }),
+        users.login
     );
 
 router.get('/logout', users.logout);
