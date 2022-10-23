@@ -21,13 +21,13 @@ const seedDb = async () => {
     await Review.deleteMany({});
     console.log('Deleting all campgrounds successfully completed!');
 
-    for (let i = 0; i < 50; i++) {
+    for (let i = 0; i < 400; i++) {
         const random1000 = Math.floor(Math.random() * 1000);
         const randomPrice = Math.floor(Math.random() * 20) + 10;
         const camp = new Campground({
             title: sample(descriptors) + ' ' + sample(places),
             location: `${cities[random1000].city}, ${cities[random1000].state}`,
-            geometry: { type: 'Point', coordinates: [ -113.133115, 47.020078 ] },
+            geometry: { type: 'Point', coordinates: [cities[random1000].longitude, cities[random1000].latitude] },
             description: 'Lorem ipsum dolor sit amet, consectetur adipisicing elit. Ipsam, praesentium. Praesentium facere dolore suscipit, rerum, nisi assumenda placeat tempora illum facilis accusantium, odio soluta molestias qui ab sed tenetur quibusdam.',
             price: randomPrice,
             author: '63488ca5f65d4db69988205c',
