@@ -8,9 +8,12 @@ const map = new mapboxgl.Map({
     projection: 'globe' // display the map as a 3D globe
 });
 
+
 map.on('style.load', () => {
     map.setFog({}); // Set the default atmosphere style
 });
+
+map.addControl(new mapboxgl.NavigationControl(), 'top-right');
 
 const marker1 = new mapboxgl.Marker()
     .setLngLat(campgroundParsed.geometry.coordinates)
