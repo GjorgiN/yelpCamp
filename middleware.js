@@ -6,7 +6,11 @@ const Review = require('./models/review');
 
 module.exports.isLoggedIn = (req, res, next) => {
     if (!req.isAuthenticated()) {
-        req.session.returnTo = req.originalUrl;
+        const { originalUrl } = req;
+        const { id } = req.params;
+        // console.log(originalUrl, id);
+        // req.session.returnTo = req.originalUrl;
+        req.session.returnTo = (originalUrl === `/campgrounds/${id}/reviews` ? `/campgrounds/${id}` : originalUrl);
         req.flash('error', 'You need to be logged in first.');
         return res.redirect('/login');
     }
