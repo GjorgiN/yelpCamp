@@ -21,9 +21,12 @@
                         <a class="nav-link" href="/login">login</a>
                         <a class="nav-link" href="/register">register</a>
                     </section>
-                    <% } else { %>
-                        <a class="ms-auto nav-link" href="/logout">logout</a>
-                        <% } %>
+                <% } else { %>
+                    <section class="d-flex ms-auto">
+                        <a class="me-2 nav-link" href="#"><%= currentUser.username %></a>
+                        <a class="nav-link" href="/logout">logout</a>
+                    </section>
+                <% } %>
             </nav>
         </header>
         <main class="px-3 mt-auto justify-content-center">
