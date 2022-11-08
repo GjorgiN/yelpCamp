@@ -10,6 +10,11 @@ module.exports.index = async (req, res) => {
     res.render('campgrounds/index', { campgrounds });
 }
 
+module.exports.homeMap = async (req, res) => {
+    const campgrounds = await Campground.find({});
+    res.render('homeWMap', { campgrounds });
+}
+
 module.exports.renderNewForm = (req, res) => {
     res.render('campgrounds/new');
 }
@@ -26,7 +31,7 @@ module.exports.createCampground = async (req, res, next) => {
     campground.images = req.files.map(file => ({ url: file.path, filename: file.filename }))
     campground.author = req.user._id;
     await campground.save();
-    console.log(campground);
+    // console.log(campground);
     req.flash('success', 'Successfully made new campground');
     res.redirect(`/campgrounds/${campground.id}`);
 }
@@ -43,6 +48,7 @@ module.exports.showCampground = async (req, res) => {
         req.flash('error', 'Cannot find that campground!');
         return res.redirect('/campgrounds');
     }
+    console.log(campground.averageRating);
     res.render('campgrounds/show', { campground });
 }
 
@@ -64,7 +70,7 @@ module.exports.updateCampground = async (req, res) => {
     const campground = await Campground.findByIdAndUpdate(req.params.id, { ...req.body.campground });
     const newImages = req.files.map(file => ({ url: file.path, filename: file.filename }))
     campground.geometry = geoData.body.features[0].geometry;
-    
+
     campground.images.push(...newImages);
 
     const { deleteImages } = req.body;
