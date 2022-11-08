@@ -1,8 +1,54 @@
 const User = require('../models/user');
-
+const { cloudinary, storageUsers } = require('../cloudinary')
 module.exports.renderRegister = (req, res) => { res.render('users/register'); }
 
 module.exports.renderLogin = (req, res) => { res.render('users/login'); }
+
+module.exports.renderUserUpdate = (req, res) => { res.render('users/update'); }
+
+
+module.exports.userUpdate = async (req, res) => {
+    console.log('req.body: ', req.body);
+    console.log('req.user:', req.user);
+    console.log('req.file:', req.file);
+    console.log('req.login:', req.login);
+    const { email, username, newPassword, repeatNewPassword, currentPassword } = req.body;
+    console.log(email, username, newPassword, repeatNewPassword, currentPassword);
+    const user = await User.findById(req.user._id);
+    console.log(user);
+    let flashMessageSuccess = '';
+
+
+    if (email) {
+        user.email = email;
+        flashMessageSuccess += 'Email updated successfully.'
+    }
+
+    if (username) {
+        user.username = username;
+        flashMessageSuccess += ' Username updated successfully.'
+    }
+
+    await user.save();
+
+    if (newPassword && repeatNewPassword && currentPassword && newPassword === repeatNewPassword) {
+        await user.changePassword(currentPassword, newPassword);
+        flashMessageSuccess += ' Password updated successfully.'
+    }
+
+    // TODO: save file to cloudinary and file url and filename to db
+
+    // const uploadRes = await cloudinary.uploader.upload(req.file.path, { ...storageUsers })
+    // const userImageFilename = uploadRes.public_id;
+    // const userImageUrl = uploadRes.secure_url;
+
+
+    req.login(user, function (err) {
+        if (err) return next();
+        req.flash('success', flashMessageSuccess)
+        res.redirect('/userUpdate');
+    });
+}
 
 module.exports.register = async (req, res) => {
     try {
