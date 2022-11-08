@@ -4,7 +4,7 @@ const map = new mapboxgl.Map({
     container: 'map', // container ID
     style: 'mapbox://styles/mapbox/light-v9', // style URL
     center: campgroundParsed.geometry.coordinates, // starting position [lng, lat]
-    zoom: 7, // starting zoom
+    zoom: 6, // starting zoom
     projection: 'globe' // display the map as a 3D globe
 });
 
