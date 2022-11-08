@@ -17,7 +17,6 @@ const opts = { toJSON: { virtuals: true } }
 const CampgroundSchema = new Schema({
     title: String,
     price: Number,
-    imageUrl: String,
     images: [ImageSchema],
     description: String,
     location: String,
@@ -38,12 +37,24 @@ const CampgroundSchema = new Schema({
     },
     reviews: [{
         type: Schema.Types.ObjectId,
-        ref: 'Review'
+        ref: 'Review',
     }]
 }, opts);
 
 CampgroundSchema.virtual('properties.popUpMarkup').get(function () {
     return `<strong><a href=/campgrounds/${this._id}>${this.title}</a></strong><p>${this.description.substring(0, 30)}...</p>`;
+});
+
+CampgroundSchema.virtual('averageRating').get(function () {
+    const { reviews } = this;
+    const count = reviews.length;
+    if (count) {
+        const initialValue = 0;
+        const sum = reviews.reduce((previousRate, currentReview) => previousRate + currentReview.rating, initialValue);
+        return Math.round(sum / count * 10) / 10;
+    }
+    return null;
+
 });
 
 
