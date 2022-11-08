@@ -11,11 +11,17 @@ const storage = new CloudinaryStorage({
     cloudinary,
     params: {
         folder: 'YelpCamp',
-        allowedFormats: ['jpeg, png, jpg']
+        allowedFormats: ['jpeg, png, jpg, svg']
     }
 })
 
+// different because cloudinary api is used without multer-storage-cloudinary in users routes and controller
+const storageUsers = {
+    folder: 'YelpCamp/users',
+}
+
 module.exports = {
     cloudinary,
-    storage
+    storage,
+    storageUsers
 }
