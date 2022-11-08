@@ -1,15 +1,28 @@
 const express = require('express');
-const User = require('../models/user');
 const catchAsync = require('../utils/catchAsync');
 const passport = require('passport')
 
 const users = require('../controllers/users');
+const { isLoggedIn } = require('../middleware');
 
 const router = express.Router({ mergeParams: true });
+
+const multer = require('multer');
+// const { storageUsers, cloudinary } = require('../cloudinary');
+const upload = multer({
+    storage: multer.diskStorage({})
+});
+
+
 
 router.route('/register')
     .get(users.renderRegister)
     .post(catchAsync(users.register));
+
+router.route('/userUpdate')
+    .get(isLoggedIn, users.renderUserUpdate)
+    .post(isLoggedIn, upload.single('userImage'), catchAsync(users.userUpdate));
+
 
 router.route('/login')
     .get(users.renderLogin)
