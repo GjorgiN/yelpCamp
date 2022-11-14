@@ -1,4 +1,4 @@
-<nav class="navbar py-0 navbar-light fixed-top navbar-expand-lg bg-light">
+<nav class="navbar navbar-light fixed-top navbar-expand-lg bg-light">
     <div class="container-fluid">
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
             aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
@@ -34,9 +34,9 @@
         
         <% if (currentUser) { %>
             <!-- <a class="navbar-brand" href="#"><%= currentUser.username %></a> -->
-            <a class="navbar-brand d-flex align-items-center" href="#">
+            <a class="d-flex align-items-center" href="#">
                 <span style="font-size: 1.2rem;"><%= currentUser.username %></span>
-                <img class="ms-1" style="width: 3rem; border-radius: 50%;" crossorigin src="https://res.cloudinary.com/dajdyiuip/image/upload/w_300/v1667847550/YelpCamp/users/julian-wan-WNoLnJo7tS8-unsplash_jnlwyi.jpg" alt="">
+                <img class="ms-1" style="width: 3rem; height: 3rem; object-fit: cover; border-radius: 50%;" crossorigin src="<%= currentUser.image ? currentUser.image.url : 'https://res.cloudinary.com/dajdyiuip/image/upload/v1667840368/YelpCamp/users/defaultUser_nylqtn.svg' %>" alt="user image or default user icon"/>
             </a>
         <% } %>
     </div>
