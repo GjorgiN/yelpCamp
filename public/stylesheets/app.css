@@ -42,6 +42,13 @@ body {
     cursor: not-allowed;
 }
 
-.labelDisabledInput {
+.labelInputInline {
     min-width: fit-content;
+}
+
+#showUserImage {
+    width: 12rem;
+    height: 12rem;
+    border-radius: 50%;
+    object-fit: cover;
 }
