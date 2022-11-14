@@ -7,47 +7,83 @@ module.exports.renderLogin = (req, res) => { res.render('users/login'); }
 module.exports.renderUserUpdate = (req, res) => { res.render('users/update'); }
 
 
-module.exports.userUpdate = async (req, res) => {
-    console.log('req.body: ', req.body);
-    console.log('req.user:', req.user);
-    console.log('req.file:', req.file);
-    console.log('req.login:', req.login);
-    const { email, username, newPassword, repeatNewPassword, currentPassword } = req.body;
-    console.log(email, username, newPassword, repeatNewPassword, currentPassword);
+module.exports.userUpdate = async (req, res, next) => {
+    const { email, newUsername, newPassword, repeatNewPassword, password, updateProfilePicture, removePicture } = req.body;
     const user = await User.findById(req.user._id);
-    console.log(user);
-    let flashMessageSuccess = '';
+
+    const authRes = await user.authenticate(password);
+
+    if (!authRes.user) {
+        req.logout(function (err) {
+            if (err) return next(err);
+            req.flash('error', 'Wrong username or/ and password. Please enter correct credentials.');
+            res.redirect('/login');
+        });
+    } else {
+        if (email) {
+            user.email = email;
+            req.flash('success', 'Email updated successfully.');
+        }
+
+        try {
+            if (updateProfilePicture === 'on') {
+                const { file } = req;
+                if (file) {
+                    if (user.image) {
+                        await cloudinary.uploader.destroy(user.image.filename);
+                    }
+                    const uploadRes = await cloudinary.uploader.upload(file.path, { ...storageUsers });
+                    user.image = {
+                        url: uploadRes.secure_url,
+                        filename: uploadRes.public_id
+                    }
+                    req.flash('success', 'Profile picture updated successfully.');
+                } else if (removePicture === 'on' && !user.image) {
+                    req.flash('error', 'You cannot delete the default user icon.');
+                } else if (removePicture === 'on' && user.image) {
+                    await cloudinary.uploader.destroy(user.image.filename);
+                    user.image = undefined;
+                    req.flash('success', 'Profile picture removed successfully.');
+                }
+            }
+        } catch (err) {
+            req.flash('error', 'Image cannot be uploaded at this moment. Please try again later.');
+        }
 
 
-    if (email) {
-        user.email = email;
-        flashMessageSuccess += 'Email updated successfully.'
+        if (newPassword && repeatNewPassword && newPassword === repeatNewPassword) {
+            await user.changePassword(password, newPassword);
+            req.flash('success', 'Password updated successfylly.');
+        }
+
+        if (newUsername) {
+            user.username = newUsername;
+            await user.save();
+
+            req.login(user, async function (err) {
+                if (err) next();
+                req.flash('success', 'Username updated successfully.');
+
+                if (newPassword) {
+                    req.flash('success', 'Password updated successfully.');
+                }
+                if (email) {
+                    req.flash('success', 'Email updated successfully.');
+                }
+                if (updateProfilePicture === 'on') {
+                    if (removePicture === 'on' && !user.image) {
+                        req.flash('error', 'You cannot delete the default user icon.');
+                    } else {
+                        req.flash('success', 'Profile picture updated successfully.');
+                    }
+                }
+                res.redirect('/userUpdate');
+            });
+        } else {
+            await user.save();
+            res.redirect('/userUpdate');
+        }
     }
-
-    if (username) {
-        user.username = username;
-        flashMessageSuccess += ' Username updated successfully.'
-    }
-
-    await user.save();
-
-    if (newPassword && repeatNewPassword && currentPassword && newPassword === repeatNewPassword) {
-        await user.changePassword(currentPassword, newPassword);
-        flashMessageSuccess += ' Password updated successfully.'
-    }
-
-    // TODO: save file to cloudinary and file url and filename to db
-
-    // const uploadRes = await cloudinary.uploader.upload(req.file.path, { ...storageUsers })
-    // const userImageFilename = uploadRes.public_id;
-    // const userImageUrl = uploadRes.secure_url;
-
-
-    req.login(user, function (err) {
-        if (err) return next();
-        req.flash('success', flashMessageSuccess)
-        res.redirect('/userUpdate');
-    });
 }
 
 module.exports.register = async (req, res) => {
@@ -79,7 +115,7 @@ module.exports.login = (req, res) => {
 module.exports.logout = (req, res, next) => {
     req.logout(function (err) {
         if (err) return next(err);
-        req.flash('success', 'Successfully logged out. Bye!');
+        req.flash('success', 'Successfully logged out.');
         res.redirect('/campgrounds');
     });
 }
