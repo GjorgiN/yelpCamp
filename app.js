@@ -116,8 +116,14 @@ app.use((req, res, next) => {
     // console.log('SESSION: ', req.session);
     // console.log('USER: ', req.user);
     res.locals.currentUser = req.user;
-    res.locals.success = req.flash('success');
-    res.locals.error = req.flash('error');
+
+    const { success, error } = req.flash();
+    res.locals.success = success;
+    res.locals.error = error;
+    // console.log('REQ1:', success);
+    // console.log('REQ2:', error);
+    // console.log('REQ1:', req.flash());
+    // console.log('REQ2:', req.flash().error);
     next();
 })
 
