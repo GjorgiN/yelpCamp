@@ -23,6 +23,8 @@ router.route('/userUpdate')
     .get(isLoggedIn, users.renderUserUpdate)
     .post(isLoggedIn, upload.single('userImage'), catchAsync(users.userUpdate));
 
+router.route('/user/:id')
+    .get(isLoggedIn, users.renderProfile)
 
 router.route('/login')
     .get(users.renderLogin)
