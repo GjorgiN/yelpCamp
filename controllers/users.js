@@ -1,10 +1,18 @@
 const User = require('../models/user');
+const Campground = require('../models/campground');
 const { cloudinary, storageUsers } = require('../cloudinary')
 module.exports.renderRegister = (req, res) => { res.render('users/register'); }
 
 module.exports.renderLogin = (req, res) => { res.render('users/login'); }
 
 module.exports.renderUserUpdate = (req, res) => { res.render('users/update'); }
+
+module.exports.renderProfile = async (req, res) => {
+    const userId = req.params.id;
+    const user = await User.findById(userId);
+    const usersCamps = await Campground.find({ author: userId });
+    res.render('users/profile', { usersCamps, user });
+}
 
 
 module.exports.userUpdate = async (req, res, next) => {
