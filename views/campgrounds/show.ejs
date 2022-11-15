@@ -74,7 +74,7 @@
                 </div>
                 <ul class="list-group list-group-flush">
                     <li class="list-group-item text-muted"><%= campground.location %></li>
-                    <li class="list-group-item">Submitted by: <%= campground.author.username %></li>
+                    <a href="/user/<%= campground.author._id %>"><li class="list-group-item">Submitted by: <%= campground.author.username %></li></a>
                     <li class="list-group-item">$<%= campground.price %>/night</li>
                 </ul>
                 <% if (currentUser && campground.author._id.equals(currentUser._id)) { %>
