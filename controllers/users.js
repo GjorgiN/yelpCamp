@@ -1,5 +1,6 @@
 const User = require('../models/user');
 const Campground = require('../models/campground');
+const Review = require('../models/review');
 const { cloudinary, storageUsers } = require('../cloudinary')
 module.exports.renderRegister = (req, res) => { res.render('users/register'); }
 
@@ -10,8 +11,11 @@ module.exports.renderUserUpdate = (req, res) => { res.render('users/update'); }
 module.exports.renderProfile = async (req, res) => {
     const userId = req.params.id;
     const user = await User.findById(userId);
+    const usersReviews = await Review.find({author: user._id});
+    const reviewsCountByUser = usersReviews.length;
     const usersCamps = await Campground.find({ author: userId });
-    res.render('users/profile', { usersCamps, user });
+    const campsCountByUser = usersCamps.length;
+    res.render('users/profile', { usersCamps, usersReviews, user, reviewsCountByUser, campsCountByUser });
 }
 
 
