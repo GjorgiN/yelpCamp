@@ -19,13 +19,7 @@
 }
 
 body {
-    background-color: #fefefe;
-}
-
-;
-
-.card {
-    background-color: #fafafa;
+    background-color: #ededed;
 }
 
 #landing {
@@ -51,4 +45,14 @@ body {
     height: 12rem;
     border-radius: 50%;
     object-fit: cover;
+}
+
+.card {
+    background-color: #f8f8f8;
+}
+
+.profile-bottom-border {
+    padding: 0.18em;
+    background: linear-gradient(45deg, #ededed, #888, #ededed);
+
 }
