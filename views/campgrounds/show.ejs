@@ -126,7 +126,7 @@
                 <% for(const review of campground.reviews) { %>
                     <div class="card mb-3">
                         <div class="card-body">
-                            <h6><%= review.author.username %></h6>
+                            <a href="/user/<%= review.author._id %>"><h6><%= review.author.username %></h6></a>
                             <p class="starability-result" data-rating="<%= review.rating %>">
                                 Rated: <%= review.rating %> stars
                             </p>
