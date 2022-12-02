@@ -11,10 +11,11 @@ module.exports.renderUserUpdate = (req, res) => { res.render('users/update'); }
 module.exports.renderProfile = async (req, res) => {
     const userId = req.params.id;
     const user = await User.findById(userId);
-    const usersReviews = await Review.find({author: user._id});
+    const usersReviews = await Review.find({ author: user._id }).populate('campground', ['title', 'images']);
     const reviewsCountByUser = usersReviews.length;
     const usersCamps = await Campground.find({ author: userId });
     const campsCountByUser = usersCamps.length;
+
     res.render('users/profile', { usersCamps, usersReviews, user, reviewsCountByUser, campsCountByUser });
 }
 
